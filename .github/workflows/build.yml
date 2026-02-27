@@ -1,4 +1,4 @@
-name: Build Win11 Pro Ver
+name: Final Release Production (v1.7)
 
 on:
   push:
@@ -13,36 +13,32 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Python
+      - name: Python Setup
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
-      - name: Install Build Tools
-        run: |
-          pip install -r requirements.txt
-          pip install pyinstaller Pillow
+      - name: Deps
+        run: pip install requests beautifulsoup4 PySide6 pyinstaller Pillow
 
-      - name: Preprocess Icon and Assets
+      - name: Icon Crafting
         shell: python
         run: |
           from PIL import Image
-          import os
-          # 裁剪并生成 ICO
+          # 高质量缩略并裁剪
           img = Image.open('assets/logo.jpg')
-          # 满格裁剪逻辑
           img.save('assets/icon.ico', format='ICO', sizes=[(256, 256)])
-          print("Icon created.")
 
-      - name: Bundle into Single EXE
+      - name: Binary Build
+        # 强制将 assets 打包进入 dist 并设置系统图标
         run: |
-          pyinstaller --noconsole --onefile --add-data "assets;assets" --icon "assets/icon.ico" --name HCOWA_Brief_Tool_Pro main.py
+          pyinstaller --noconsole --onefile --add-data "assets;assets" --icon "assets/icon.ico" --name HCOWA_Brief_Helper_v1.7 main.py
 
-      - name: Auto Release
+      - name: Push to Release
         uses: softprops/action-gh-release@v1
         with:
-          files: dist/HCOWA_Brief_Tool_Pro.exe
+          files: dist/HCOWA_Brief_Helper_v1.7.exe
           tag_name: ${{ github.ref_name }}
-          body: "HCOWA 每日简报生成器 v1.6 - 专业版。支持历史日期检索，新增简评模块，全原文链接支持。"
+          body: "HCOWA 旗舰版 v1.7：修复汉化洗稿逻辑，动态简评生成，图标资源锁死发布。"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
