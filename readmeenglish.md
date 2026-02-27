@@ -116,7 +116,7 @@ The generated briefing strictly follows the standard HCOWA format:
 
 ```
 
-《HCOWA西非健康共同体协会每日健康时事简报》
+《HCOWA West Africa Health Community Daily Brief》
 Date: YYYY-MM-DD | Location: Accra, Ghana
 ───
 📌 [Top Focus:]
@@ -140,6 +140,7 @@ Date: YYYY-MM-DD | Location: Accra, Ghana
 ---
 
 <p align="right"><sub>Powered by HCOWA Information Center · Designed by Zaki</sub></p>
+
 
 
 
