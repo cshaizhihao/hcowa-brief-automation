@@ -1,4 +1,4 @@
-name: Build Windows App (Final Brand Fix)
+name: Build Win11 Pro Ver
 
 on:
   push:
@@ -18,27 +18,31 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install dependencies
+      - name: Install Build Tools
         run: |
           pip install -r requirements.txt
           pip install pyinstaller Pillow
 
-      - name: Create ICO Icon
+      - name: Preprocess Icon and Assets
         shell: python
         run: |
           from PIL import Image
           import os
+          # 裁剪并生成 ICO
           img = Image.open('assets/logo.jpg')
+          # 满格裁剪逻辑
           img.save('assets/icon.ico', format='ICO', sizes=[(256, 256)])
+          print("Icon created.")
 
-      - name: Build EXE
+      - name: Bundle into Single EXE
         run: |
-          pyinstaller --noconsole --onefile --add-data "assets;assets" --icon "assets/icon.ico" --name HCOWA_Brief_Helper main.py
+          pyinstaller --noconsole --onefile --add-data "assets;assets" --icon "assets/icon.ico" --name HCOWA_Brief_Tool_Pro main.py
 
-      - name: Release
+      - name: Auto Release
         uses: softprops/action-gh-release@v1
         with:
-          files: dist/HCOWA_Brief_Helper.exe
+          files: dist/HCOWA_Brief_Tool_Pro.exe
           tag_name: ${{ github.ref_name }}
+          body: "HCOWA 每日简报生成器 v1.6 - 专业版。支持历史日期检索，新增简评模块，全原文链接支持。"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
