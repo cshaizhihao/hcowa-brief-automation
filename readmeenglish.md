@@ -95,7 +95,7 @@ pip install pyinstaller
 pyinstaller --noconsole --onefile --add-data "assets;assets" --icon "assets/icon.ico" --name HCOWA_Brief_Helper main.py
 
 
-Project Structure
+### Project Structure
 
 ```
 hcowa-brief-automation/
@@ -112,6 +112,7 @@ hcowa-brief-automation/
 ```
 
 📋 Briefing Format Specification
+
 The generated briefing strictly follows the standard HCOWA format:
 
 ```
@@ -137,6 +138,5 @@ Date: YYYY-MM-DD | Location: Accra, Ghana
 ```
 
 ---
-
 
 <p align="right"><sub>Powered by HCOWA Information Center · Designed by Zaki</sub></p>
