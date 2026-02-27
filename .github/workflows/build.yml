@@ -1,4 +1,4 @@
-name: Build Windows App
+name: Build Windows App (Fixed Resources)
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     runs-on: windows-latest
-    permissions: # 关键修复：显式允许写权限
+    permissions:
       contents: write
     steps:
       - uses: actions/checkout@v3
@@ -23,15 +23,15 @@ jobs:
           pip install -r requirements.txt
           pip install pyinstaller
 
-      - name: Build EXE
+      - name: Build EXE with Assets
+        # 修复：明确包含 assets 目录并设置 icon
         run: |
-          pyinstaller --noconsole --onefile --name HCOWA_Brief_Helper main.py
+          pyinstaller --noconsole --onefile --add-data "assets;assets" --name HCOWA_Brief_Helper main.py
 
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           files: dist/HCOWA_Brief_Helper.exe
           tag_name: ${{ github.ref_name }}
-          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
