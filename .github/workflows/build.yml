@@ -1,4 +1,4 @@
-name: Build Windows App (Fixed Resources)
+name: Build Windows App (Final Brand Fix)
 
 on:
   push:
@@ -21,12 +21,19 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-          pip install pyinstaller
+          pip install pyinstaller Pillow
 
-      - name: Build EXE with Assets
-        # 修复：明确包含 assets 目录并设置 icon
+      - name: Create ICO Icon
+        shell: python
         run: |
-          pyinstaller --noconsole --onefile --add-data "assets;assets" --name HCOWA_Brief_Helper main.py
+          from PIL import Image
+          import os
+          img = Image.open('assets/logo.jpg')
+          img.save('assets/icon.ico', format='ICO', sizes=[(256, 256)])
+
+      - name: Build EXE
+        run: |
+          pyinstaller --noconsole --onefile --add-data "assets;assets" --icon "assets/icon.ico" --name HCOWA_Brief_Helper main.py
 
       - name: Release
         uses: softprops/action-gh-release@v1
