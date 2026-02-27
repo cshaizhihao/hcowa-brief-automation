@@ -1,4 +1,4 @@
-name: Final Release Production (v1.7)
+name: HCOWA Release Build
 
 on:
   push:
@@ -10,35 +10,71 @@ jobs:
     runs-on: windows-latest
     permissions:
       contents: write
+
     steps:
       - uses: actions/checkout@v3
 
-      - name: Python Setup
+      - name: Set up Python 3.10
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
-      - name: Deps
-        run: pip install requests beautifulsoup4 PySide6 pyinstaller Pillow
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pyinstaller Pillow
 
-      - name: Icon Crafting
+      - name: Process Logo → Transparent ICO
         shell: python
         run: |
           from PIL import Image
-          # 高质量缩略并裁剪
-          img = Image.open('assets/logo.jpg')
-          img.save('assets/icon.ico', format='ICO', sizes=[(256, 256)])
+          import os
 
-      - name: Binary Build
-        # 强制将 assets 打包进入 dist 并设置系统图标
+          # 优先使用 PNG（透明背景），否则退用 JPG 并去白边
+          src = 'assets/logo.png' if os.path.exists('assets/logo.png') else 'assets/logo.jpg'
+          img = Image.open(src).convert('RGBA')
+
+          # 将接近白色的像素全部变透明（去白边）
+          data = img.getdata()
+          new_data = []
+          for r, g, b, a in data:
+              if r > 230 and g > 230 and b > 230:
+                  new_data.append((255, 255, 255, 0))
+              else:
+                  new_data.append((r, g, b, a))
+          img.putdata(new_data)
+          img = img.crop(img.getbbox())   # 裁掉透明边缘
+          img.save('assets/icon.ico', format='ICO', sizes=[(256,256),(128,128),(64,64),(32,32)])
+          img.save('assets/logo_clean.png', format='PNG')
+          print("Icon crafted.")
+
+      - name: Build EXE
         run: |
-          pyinstaller --noconsole --onefile --add-data "assets;assets" --icon "assets/icon.ico" --name HCOWA_Brief_Helper_v1.7 main.py
+          pyinstaller `
+            --noconsole `
+            --onefile `
+            --add-data "assets;assets" `
+            --icon "assets/icon.ico" `
+            --name HCOWA_Brief_Helper `
+            main.py
 
-      - name: Push to Release
+      - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: dist/HCOWA_Brief_Helper_v1.7.exe
+          files: dist/HCOWA_Brief_Helper.exe
           tag_name: ${{ github.ref_name }}
-          body: "HCOWA 旗舰版 v1.7：修复汉化洗稿逻辑，动态简评生成，图标资源锁死发布。"
+          body: |
+            ## HCOWA 每日简报助手 ${{ github.ref_name }}
+
+            ### 本版本更新
+            - ✅ 新闻标题、摘要全程自动中文翻译
+            - ✅ 日期选择器乱码修复（强制英文格式）
+            - ✅ 禁止选择未来日期，保障数据真实性
+            - ✅ LOGO 白边去除，透明背景图标
+            - ✅ 全新 Win11 风格 UI，新增 Zaki Tag
+            - ✅ 每条新闻配备独立 HCOWA 简评
+
+            ### 使用方法
+            双击 `HCOWA_Brief_Helper.exe` 即可运行，无需安装任何依赖。
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
