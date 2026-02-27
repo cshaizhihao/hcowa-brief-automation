@@ -1,11 +1,18 @@
 <p align="center">
-  <img src="assets/logo.jpg" width="160" alt="HCOWA Logo"/>
+  <img src="assets/READMELOGO.png" width="150" alt="HCOWA Logo"/>
 </p>
 
 <h1 align="center">HCOWA 每日热点新闻生成器</h1>
+<p align="center">Health Community of West Africa</p>
 <p align="center">西非健康共同体协会 · 智能简报系统</p>
+<p align="center">作者：张翟 Zaki</p>
+
+<h3 align="center">
+  中文 | <a href="https://github.com/cshaizhihao/hcowa-brief-automation/blob/master/readmeenglish.md">ENGLISH</a>
+</h3>
+
 <p align="center">
-  <img src="https://img.shields.io/github/v/release/cshaizhihao/hcowa-brief-automation?label=最新版本&color=blue"/>
+  <img src="https://img.shields.io/github/v/release/cshaizhihao/hcowa-brief-automation?label=%E6%9C%80%E6%96%B0%E7%89%88%E6%9C%AC&color=blue"/>
   <img src="https://img.shields.io/badge/Platform-Windows%2011-0078D4?logo=windows"/>
   <img src="https://img.shields.io/badge/Python-3.10-yellow?logo=python"/>
 </p>
@@ -16,20 +23,22 @@
 
 | 功能 | 说明 |
 |------|------|
-| 🔄 **一键同步热点** | 自动检索当日西非地区医疗健康新闻 |
-| 🌐 **智能中文处理** | 全程自动将英文内容转换为中文 |
-| 📅 **往期回顾** | 支持按日期查询历史新闻（不可选未来日期）|
-| 📋 **一键复制** | 生成后直接复制，粘贴即可发布 |
-| 📝 **HCOWA 简评** | 每条新闻配备专业分析简评 |
-| 🎨 **Win11 风格 UI** | 现代化界面，简洁高效 |
+| 🔄 一键同步热点 | 自动检索当日西非地区医疗健康新闻 |
+| 📰 智能中文处理 | 全程自动将英文内容转换为中文 |
+| 📅 往期回顾 | 支持按日期查询历史新闻（不可选未来日期）|
+| 📋 一键复制 | 生成后直接复制，粘贴即可发布 |
+| 📝 HCOWA 简评 | 每条新闻配备专业分析简评 |
+| 🎨 Win11 风格 UI | 现代化界面，简洁高效 |
+| 🌐 中文-英文切换 | 方便非洲同事与国内同事使用 |
+| 📝 新闻公众号扩写 | 一键打开豆包粘贴后扩写为公众号 |
 
 ---
 
 ## 🚀 快速开始（推荐）
 
-**无需安装 Python 或任何依赖，双击即用：**
+无需安装 Python 或任何依赖，双击即用：
 
-1. 前往 [**Releases 页面**](https://github.com/cshaizhihao/hcowa-brief-automation/releases) 下载最新版本
+1. 前往 [Releases 页面](https://github.com/cshaizhihao/hcowa-brief-automation/releases) 下载最新版本
 2. 下载 `HCOWA_Brief_Helper.exe`
 3. 双击运行即可
 
@@ -41,14 +50,14 @@
 
 ### 第一步：选择日期
 
-程序启动后，顶部显示**今日日期**（默认）。
+程序启动后，顶部显示今日日期（默认）。
 
-- **今日简报**：保持默认，直接进行第二步。
-- **往期回顾**：点击日期框，通过弹出日历选择历史日期（系统已锁定，无法选择未来日期）。
+- 今日简报：保持默认，直接进行第二步。
+- 往期回顾：点击日期框，通过弹出日历选择历史日期（系统已锁定，无法选择未来日期）。
 
 ### 第二步：同步热点新闻
 
-点击 **「🔄 同步今日热点新闻」** 按钮。
+点击 「🔄 同步今日热点新闻」 按钮。
 
 程序将自动：
 1. 检索西非医疗健康领域最新动态
@@ -60,9 +69,15 @@
 
 ### 第三步：校对与复制
 
-内容生成后，你可以在文本框中**直接编辑修改**任何细节。
+内容生成后，你可以在文本框中直接编辑修改任何细节。
 
-确认无误后，点击 **「📋 复制简报全文」**，内容将直接进入剪贴板，粘贴到 Telegram、微信或文档中即可发布。
+确认无误后，点击 「📋 复制简报全文」，内容将直接进入剪贴板，粘贴到 Telegram、微信或文档中即可发布。
+
+### 第四步：可选扩写为公众号
+
+内容生成后，则可解锁绿色按钮📝扩写为公众号。
+
+点击 「📝扩写为公众号」，根据要求选择具体新闻内容，点击确定后自动跳转豆包AI网页版本，在下方按Ctrl+V直接发送，无需登录。
 
 ---
 
@@ -90,14 +105,14 @@ pyinstaller --noconsole --onefile --add-data "assets;assets" --icon "assets/icon
 
 ```
 hcowa-brief-automation/
-├── main.py                  # 主程序
-├── requirements.txt         # Python 依赖
+├── main.py                  # 主程序
+├── requirements.txt         # Python 依赖
 ├── assets/
-│   ├── logo.jpg             # HCOWA 品牌图标
-│   └── icon.ico             # 程序图标（编译时生成）
+│   ├── logo.jpg             # HCOWA 品牌图标
+│   └── icon.ico             # 程序图标（编译时生成）
 └── .github/
-    └── workflows/
-        └── build.yml        # GitHub Actions 自动打包配置
+    └── workflows/
+        └── build.yml        # GitHub Actions 自动打包配置
 ```
 
 ---
