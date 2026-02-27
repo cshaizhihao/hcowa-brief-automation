@@ -93,7 +93,7 @@ python main.py
 # Package manually (Windows)
 pip install pyinstaller
 pyinstaller --noconsole --onefile --add-data "assets;assets" --icon "assets/icon.ico" --name HCOWA_Brief_Helper main.py
-
+```
 
 ### Project Structure
 
@@ -139,4 +139,5 @@ Date: YYYY-MM-DD | Location: Accra, Ghana
 ---
 
 <p align="right"><sub>Powered by HCOWA Information Center · Designed by Zaki</sub></p>
+
 
