@@ -110,7 +110,7 @@ hcowa-brief-automation/
 ```
 
 ```
-📋 Briefing Format Specification
+## 📋 Briefing Format Specification
 
 The generated briefing strictly follows the standard HCOWA format:
 
@@ -139,5 +139,6 @@ Date: YYYY-MM-DD | Location: Accra, Ghana
 ---
 
 <p align="right"><sub>Powered by HCOWA Information Center · Designed by Zaki</sub></p>
+
 
 
