@@ -99,18 +99,17 @@ pyinstaller --noconsole --onefile --add-data "assets;assets" --icon "assets/icon
 
 ```
 hcowa-brief-automation/
-├── main.py                  # Main program
-├── requirements.txt         # Python dependencies
+├── main.py                  # Main program
+├── requirements.txt         # Python dependencies
 ├── assets/
-│   ├── logo.png             # HCOWA brand icon
-│   └── icon.ico             # Program icon (generated during compilation)
+│   ├── logo.jpg             # HCOWA brand icon
+│   └── icon.ico             # Program icon (generated during compilation)
 └── .github/
-    └── workflows/
-        └── build.yml        # GitHub Actions automated build configuration
+    └── workflows/
+        └── build.yml        # GitHub Actions automated build configuration
 ```
 
 ```
-
 📋 Briefing Format Specification
 
 The generated briefing strictly follows the standard HCOWA format:
@@ -140,3 +139,4 @@ Date: YYYY-MM-DD | Location: Accra, Ghana
 ---
 
 <p align="right"><sub>Powered by HCOWA Information Center · Designed by Zaki</sub></p>
+
