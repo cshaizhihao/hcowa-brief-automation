@@ -122,19 +122,30 @@ def translate(text: str) -> str:
     if not text or not any(c.isalpha() and ord(c) < 128 for c in text):
         return text  # 纯中文或空，无需翻译
 
-    encoded = quote(text[:500])  # 限长防超时
+    # MyMemory 单次最多 500 字符，超长分段翻译后拼接
+    def _mymemory(t):
+        chunks, result = [], []
+        for i in range(0, len(t), 480):
+            chunks.append(t[i:i+480])
+        for chunk in chunks:
+            r = requests.get(
+                f"https://api.mymemory.translated.net/get?q={quote(chunk)}&langpair=en|zh-CN",
+                timeout=10, verify=False
+            )
+            data = r.json()
+            if data.get("responseStatus") == 200:
+                part = data["responseData"]["translatedText"]
+                if part and "MYMEMORY WARNING" not in part:
+                    result.append(part)
+                    continue
+            return None  # 任一分段失败则整体失败
+        return "".join(result)
 
-    # ── 方案 1：MyMemory（免费，国内可访问）──────────────────────────
+    # ── 方案 1：MyMemory（免费，中国境内可用）────────────────────────
     try:
-        r = requests.get(
-            f"https://api.mymemory.translated.net/get?q={encoded}&langpair=en|zh-CN",
-            timeout=8, verify=False
-        )
-        data = r.json()
-        if data.get("responseStatus") == 200:
-            result = data["responseData"]["translatedText"]
-            if result and result != text:
-                return result
+        out = _mymemory(text)
+        if out and out != text:
+            return out
     except Exception:
         pass
 
@@ -142,8 +153,8 @@ def translate(text: str) -> str:
     try:
         r = requests.get(
             "https://translate.googleapis.com/translate_a/single"
-            f"?client=gtx&sl=auto&tl=zh-CN&dt=t&q={encoded}",
-            timeout=8, verify=False
+            f"?client=gtx&sl=auto&tl=zh-CN&dt=t&q={quote(text)}",
+            timeout=10, verify=False
         )
         return "".join(seg[0] for seg in r.json()[0] if seg[0])
     except Exception:
@@ -192,22 +203,29 @@ class BriefWorker(QThread):
             for i, art in enumerate(articles, 1):
                 self.progress.emit(L["processing"].format(i))
 
-                # Title
+                # Title — 完整提取，不截断
                 raw_title = ""
                 for tag in ("h3", "h2", "a"):
                     el = art.find(tag)
-                    if el and len(el.get_text(strip=True)) > 10:
-                        raw_title = el.get_text(strip=True)
-                        break
-                title_out = (translate(raw_title) if self.lang == "zh" else raw_title) \
+                    if el:
+                        t = el.get_text(strip=True)
+                        # 过滤掉纯 URL 或过短的文本
+                        if t and not t.startswith("http") and len(t) > 5:
+                            raw_title = t
+                            break
+                title_out = (translate(raw_title) if (self.lang == "zh" and raw_title) else raw_title) \
                             or (f"西非医疗动态 #{i}" if self.lang == "zh" else f"W. Africa Health Update #{i}")
 
-                # Snippet
-                snippet_raw = next(
-                    (p.get_text(strip=True)[:150] for p in art.find_all("p")
-                     if len(p.get_text(strip=True)) > 30), ""
-                )
-                snippet_out = (translate(snippet_raw) if self.lang == "zh" else snippet_raw) \
+                # Snippet — 完整提取，不截断（最多取 3 个 p 段合并）
+                snippet_parts = []
+                for p in art.find_all("p"):
+                    t = p.get_text(strip=True)
+                    if len(t) > 15:
+                        snippet_parts.append(t)
+                    if len(snippet_parts) >= 2:
+                        break
+                snippet_raw = " ".join(snippet_parts)
+                snippet_out = (translate(snippet_raw) if (self.lang == "zh" and snippet_raw) else snippet_raw) \
                               or ("详情请访问原文链接。" if self.lang == "zh" else "See source for details.")
 
                 # URL
