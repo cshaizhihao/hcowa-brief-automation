@@ -1,5 +1,9 @@
 # 🚀 HCOWA 简报助手 (Win11 桌面版)
 
+<p align="center">
+  <img src="assets/logo.jpg" width="400" alt="HCOWA Logo">
+</p>
+
 **HCOWA Brief Helper** 是一款专门为西非健康共同体协会打造的轻量化桌面内容生产工具。
 
 ---

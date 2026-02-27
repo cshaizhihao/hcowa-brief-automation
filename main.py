@@ -105,6 +105,7 @@ class MainWindow(QMainWindow):
     def initUI(self):
         self.setWindowTitle("HCOWA 简报助手 - Zaki Edit")
         self.setFixedSize(550, 700)
+        self.setWindowIcon(QIcon("assets/logo.jpg"))
         self.setStyleSheet(QSS_STYLE)
         
         main_layout = QVBoxLayout()
