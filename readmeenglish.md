@@ -96,6 +96,8 @@ pyinstaller --noconsole --onefile --add-data "assets;assets" --icon "assets/icon
 
 
 Project Structure
+
+```
 hcowa-brief-automation/
 ├── main.py                  # Main program
 ├── requirements.txt         # Python dependencies
@@ -105,9 +107,14 @@ hcowa-brief-automation/
 └── .github/
     └── workflows/
         └── build.yml        # GitHub Actions automated build configuration
+```
+
+```
 
 📋 Briefing Format Specification
 The generated briefing strictly follows the standard HCOWA format:
+
+```
 《HCOWA西非健康共同体协会每日健康时事简报》
 Date: YYYY-MM-DD | Location: Accra, Ghana
 ───
@@ -127,5 +134,9 @@ Date: YYYY-MM-DD | Location: Accra, Ghana
 ───
 [Exhibition & Investment Information]
 [HCOWA Information Center]
+```
+
+---
+
 
 <p align="right"><sub>Powered by HCOWA Information Center · Designed by Zaki</sub></p>
