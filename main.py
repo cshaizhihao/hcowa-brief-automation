@@ -1,5 +1,5 @@
 """
-HCOWA Daily News Generator v2.1
+HCOWA Daily News Generator v2.2
 西非健康共同体协会 · 智能简报系统
 Bilingual (ZH/EN) + WeChat Article Expansion
 """
@@ -32,7 +32,7 @@ LANGS = {
     "zh": {
         "window_title"    : "HCOWA 每日热点新闻生成器",
         "title"           : "HCOWA 每日热点新闻生成器",
-        "subtitle"        : "西非健康共同体协会 · 智能简报系统 v2.1",
+        "subtitle"        : "西非健康共同体协会 · 智能简报系统 v2.2",
         "date_label"      : "📅  简报日期：",
         "today_hint"      : "（今日）",
         "history_hint"    : "（往期回顾）",
@@ -63,7 +63,7 @@ LANGS = {
     "en": {
         "window_title"    : "HCOWA Daily News Generator",
         "title"           : "HCOWA Daily News Generator",
-        "subtitle"        : "West Africa Health Community Association · Smart Brief v2.1",
+        "subtitle"        : "West Africa Health Community Association · Smart Brief v2.2",
         "date_label"      : "📅  Brief Date:",
         "today_hint"      : "(Today)",
         "history_hint"    : "(Archive)",
@@ -111,19 +111,45 @@ COMMENTS = {
     ]
 }
 
-# ── Google Translate (no extra library needed) ───────────────────────────────
+# ── Multi-source Translate (CN & Global friendly) ───────────────────────────
 def translate(text: str) -> str:
+    """
+    翻译优先级：
+    1. MyMemory API（免费，中国境内可用，无需 Key）
+    2. Google Translate API（中国境外兜底）
+    任一成功即返回，全部失败则原文返回。
+    """
     if not text or not any(c.isalpha() and ord(c) < 128 for c in text):
-        return text
+        return text  # 纯中文或空，无需翻译
+
+    encoded = quote(text[:500])  # 限长防超时
+
+    # ── 方案 1：MyMemory（免费，国内可访问）──────────────────────────
     try:
-        url = (
-            "https://translate.googleapis.com/translate_a/single"
-            f"?client=gtx&sl=auto&tl=zh-CN&dt=t&q={quote(text)}"
+        r = requests.get(
+            f"https://api.mymemory.translated.net/get?q={encoded}&langpair=en|zh-CN",
+            timeout=8, verify=False
         )
-        r = requests.get(url, timeout=8, verify=False)
+        data = r.json()
+        if data.get("responseStatus") == 200:
+            result = data["responseData"]["translatedText"]
+            if result and result != text:
+                return result
+    except Exception:
+        pass
+
+    # ── 方案 2：Google Translate（境外兜底）──────────────────────────
+    try:
+        r = requests.get(
+            "https://translate.googleapis.com/translate_a/single"
+            f"?client=gtx&sl=auto&tl=zh-CN&dt=t&q={encoded}",
+            timeout=8, verify=False
+        )
         return "".join(seg[0] for seg in r.json()[0] if seg[0])
     except Exception:
-        return text
+        pass
+
+    return text  # 全部失败，原文返回
 
 # ── Background worker ────────────────────────────────────────────────────────
 class BriefWorker(QThread):
