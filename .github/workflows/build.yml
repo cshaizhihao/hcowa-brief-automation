@@ -3,11 +3,13 @@ name: Build Windows App
 on:
   push:
     tags:
-      - 'v*' # 当推送 v1.0, v1.1 这种标签时触发
+      - 'v*'
 
 jobs:
   build:
     runs-on: windows-latest
+    permissions: # 关键修复：显式允许写权限
+      contents: write
     steps:
       - uses: actions/checkout@v3
 
@@ -22,11 +24,14 @@ jobs:
           pip install pyinstaller
 
       - name: Build EXE
-        run: pyinstaller --noconsole --onefile --name HCOWA_Brief_Helper main.py
+        run: |
+          pyinstaller --noconsole --onefile --name HCOWA_Brief_Helper main.py
 
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           files: dist/HCOWA_Brief_Helper.exe
+          tag_name: ${{ github.ref_name }}
+          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
