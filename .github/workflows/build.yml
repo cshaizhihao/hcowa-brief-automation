@@ -21,20 +21,18 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt
-          pip install pyinstaller Pillow
+          pip install requests beautifulsoup4 PySide6 Pillow pyinstaller
 
-      - name: Process Logo → Transparent ICO
+      - name: Generate transparent ICO from logo
         shell: python
         run: |
           from PIL import Image
           import os
 
-          # 优先使用 PNG（透明背景），否则退用 JPG 并去白边
           src = 'assets/logo.png' if os.path.exists('assets/logo.png') else 'assets/logo.jpg'
           img = Image.open(src).convert('RGBA')
 
-          # 将接近白色的像素全部变透明（去白边）
+          # 去除白色背景，变透明
           data = img.getdata()
           new_data = []
           for r, g, b, a in data:
@@ -43,38 +41,43 @@ jobs:
               else:
                   new_data.append((r, g, b, a))
           img.putdata(new_data)
-          img = img.crop(img.getbbox())   # 裁掉透明边缘
-          img.save('assets/icon.ico', format='ICO', sizes=[(256,256),(128,128),(64,64),(32,32)])
-          img.save('assets/logo_clean.png', format='PNG')
-          print("Icon crafted.")
 
-      - name: Build EXE
+          # 裁剪透明边缘
+          bbox = img.getbbox()
+          if bbox:
+              img = img.crop(bbox)
+
+          # 输出多尺寸 ICO
+          img.save('assets/icon.ico', format='ICO',
+                   sizes=[(256,256),(128,128),(64,64),(48,48),(32,32),(16,16)])
+          print("ICO generated OK")
+
+      - name: Build single EXE
         run: |
-          pyinstaller `
-            --noconsole `
-            --onefile `
+          pyinstaller --noconsole --onefile `
             --add-data "assets;assets" `
             --icon "assets/icon.ico" `
             --name HCOWA_Brief_Helper `
             main.py
 
-      - name: Release
+      - name: Publish Release
         uses: softprops/action-gh-release@v1
         with:
           files: dist/HCOWA_Brief_Helper.exe
           tag_name: ${{ github.ref_name }}
           body: |
-            ## HCOWA 每日简报助手 ${{ github.ref_name }}
+            ## HCOWA 每日热点新闻生成器 ${{ github.ref_name }}
 
-            ### 本版本更新
-            - ✅ 新闻标题、摘要全程自动中文翻译
-            - ✅ 日期选择器乱码修复（强制英文格式）
-            - ✅ 禁止选择未来日期，保障数据真实性
-            - ✅ LOGO 白边去除，透明背景图标
-            - ✅ 全新 Win11 风格 UI，新增 Zaki Tag
-            - ✅ 每条新闻配备独立 HCOWA 简评
+            ### 本版更新
+            - ✅ 修复 Actions 编译失败（移除 deep_translator，改用内置翻译接口）
+            - ✅ 彻底修复日历弹窗乱码（强制 QLocale.C）
+            - ✅ 新闻标题和摘要全程中文化
+            - ✅ 禁止选择未来日期
+            - ✅ 透明背景 LOGO & 图标
+            - ✅ 右下角 Zaki 签名
+            - ✅ Win11 风格 UI 全新升级
 
             ### 使用方法
-            双击 `HCOWA_Brief_Helper.exe` 即可运行，无需安装任何依赖。
+            双击 `HCOWA_Brief_Helper.exe` 即可运行，**无需安装任何软件**。
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
