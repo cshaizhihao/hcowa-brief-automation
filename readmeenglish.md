@@ -109,13 +109,13 @@ hcowa-brief-automation/
         └── build.yml        # GitHub Actions automated build configuration
 ```
 
-```
+
 ## 📋 Briefing Format Specification
 
 The generated briefing strictly follows the standard HCOWA format:
 
-
 ```
+
 《HCOWA西非健康共同体协会每日健康时事简报》
 Date: YYYY-MM-DD | Location: Accra, Ghana
 ───
@@ -140,6 +140,7 @@ Date: YYYY-MM-DD | Location: Accra, Ghana
 ---
 
 <p align="right"><sub>Powered by HCOWA Information Center · Designed by Zaki</sub></p>
+
 
 
 
