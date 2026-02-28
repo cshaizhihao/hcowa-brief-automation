@@ -6,8 +6,8 @@ WORKDIR="/root/.openclaw/workspace"
 cd $WORKDIR
 
 # 注入 OpenClaw 运行所需环境变量
-export OPENCLAW_GATEWAY_TOKEN="0e64ee2f852f59c9922eb8dfb19f2f3af290d3a5a5e6886a"
-export OPENCLAW_GATEWAY_PORT="18789"
+export OPENCLAW_GATEWAY_TOKEN="XXXXXX"
+export OPENCLAW_GATEWAY_PORT="XXXXXX"
 
 # 执行自动化任务
 /usr/bin/openclaw agent --agent main --message "[SYSTEM] 执行 HCOWA 西非健康共同体协会每日工作。
