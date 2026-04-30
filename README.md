@@ -5,7 +5,7 @@
 <h1 align="center">HCOWA 每日热点新闻生成器</h1>
 <p align="center">Health Community of West Africa</p>
 <p align="center">西非健康共同体协会 · 智能简报系统</p>
-<p align="center">作者：张翟 Zaki</p>
+<p align="center">作者：@cshaizhihao Zaki</p>
 
 <h3 align="center">
   中文 | <a href="https://github.com/cshaizhihao/hcowa-brief-automation/blob/master/readmeenglish.md">ENGLISH</a>
